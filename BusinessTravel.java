@@ -40,7 +40,7 @@ public final class BusinessTravel {
         String s = '"' + "";
         if (!city.equals("")) s += city + " ";
         if (daysCount != 0) s += daysCount + " ";
-        if (compensation != 0) s += '(' + compensation + "). ";
+        if (compensation != 0) s += "(" + compensation + "). "; // если скобка как символ странное поведение
         if (!description.equals("")) s += description;
         return s + '"';
     }
@@ -55,6 +55,9 @@ public final class BusinessTravel {
 
     @Override
     public int hashCode() {
+        if (daysCount == 0 && compensation != 0) return city.hashCode()^compensation^description.hashCode();
+        if (daysCount != 0 && compensation == 0) return city.hashCode()^daysCount^description.hashCode();
+        if (daysCount == 0 && compensation == 0) return city.hashCode()^description.hashCode();
         return city.hashCode()^daysCount^compensation^description.hashCode();
-    } // если нули что делать
+    }
 }

@@ -68,7 +68,7 @@ public abstract class Employee {
 
     @Override
     public int hashCode() {
-        if (salary == 0) salary = 31;
+        if (salary == 0) return name.hashCode()^surname.hashCode()^post.hashCode();
         return name.hashCode()^surname.hashCode()^post.hashCode()^salary;
     }
 }
