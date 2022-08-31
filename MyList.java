@@ -17,15 +17,14 @@ public class MyList implements List<BusinessTravel> {
         if (head == null) {
             head = new Node();
             head.next = newNode;
-            size++;
         } else {
             for (int count = 0; count < size; count++) {
                 currentNode = currentNode.next;
             }
             currentNode.next = newNode;
             newNode.next = head.next;
-            size++;
         }
+        size++;
         return true;
     } // сделал
 
@@ -57,28 +56,120 @@ public class MyList implements List<BusinessTravel> {
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        return false;
-    }
+        for (Object element : c) {
+            int count = 0;
+            for (BusinessTravel travel : this) {
+                if (element.equals(travel)) count++;
+            }
+            if (count == 0) return false;
+        }
+        return true;
+    } // сделал
 
     @Override
     public boolean addAll(Collection<? extends BusinessTravel> c) {
-        return false;
-    }
+        Node currentNode = head;
+        for (int count = 0; count < size; count++) {
+            currentNode = currentNode.next;
+        }
+
+        for (BusinessTravel element : c) {
+            Node newNode = new Node(element);
+
+            if (head == null) {
+                head = new Node();
+                head.next = newNode;
+            } else {
+                currentNode.next = newNode;
+                newNode.next = head.next;
+            }
+            size++;
+            currentNode = currentNode.next;
+        }
+        return true;
+    } // сделал
 
     @Override
     public boolean addAll(int index, Collection<? extends BusinessTravel> c) {
-        return false;
-    }
+        if (index > size || index < 0) return false;
+
+        Node currentNode = head;
+        Node prevNode = null;
+        for (int count = 0; count <= index; count++) {
+            prevNode = currentNode;
+            currentNode = currentNode.next;
+        }
+        for (BusinessTravel element : c) {
+            Node newNode = new Node(element);
+
+            if (index == 0) {
+                newNode.next = currentNode;
+                head.next = newNode;
+                for (int count = 1; count < size; count++) {
+                    currentNode = currentNode.next;
+                }
+                currentNode.next = head.next;
+                index++;
+                prevNode = head.next;
+                currentNode = prevNode.next;
+            } else {
+                newNode.next = currentNode;
+                prevNode.next = newNode;
+            }
+            prevNode = newNode;
+            size++;
+        }
+        return true;
+    } // сделал
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        return false;
-    }
+        for (Object element : c) {
+            Node prevNode = head;
+            Node currentNode = head.next;
+
+            for (int count = 0; count < size; count++) {
+                if (currentNode.businessTravel.equals(element)) {
+                    prevNode.next = currentNode.next;
+                    size--;
+                    break;
+                }
+                prevNode = currentNode;
+                currentNode = currentNode.next;
+            }
+        }
+        Node currentNode = head.next;
+        for (int count = 0; count < size; count++) {
+            currentNode = currentNode.next;
+        }
+        currentNode.next = head.next;
+        return true;
+    } // сделал
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        return false;
-    }
+        Node currentNode = head;
+        List<Integer> indexes = new ArrayList<>();
+
+        for (int count = 0; count < size; count++) {
+            int counter = 0;
+            currentNode = currentNode.next;
+            for (Object element : c) {
+                if (currentNode.businessTravel.equals(element)) {
+                    counter++;
+                    break;
+                }
+            }
+            if (counter == 0) indexes.add(count);
+        }
+
+        int i = 0;
+        for (Integer index : indexes) {
+            this.remove(index - i);
+            i++;
+        }
+        return true;
+    } // сделал
 
     @Override
     public void clear() {
@@ -126,7 +217,6 @@ public class MyList implements List<BusinessTravel> {
                 currentNode = currentNode.next;
             }
             currentNode.next = head.next;
-            size++;
         } else {
             for (int count = 1; count < size; count++) {
                 prevNode = currentNode;
@@ -134,10 +224,10 @@ public class MyList implements List<BusinessTravel> {
                 if (index == count) {
                     newNode.next = currentNode;
                     prevNode.next = newNode;
-                    size++;
                 }
             }
         }
+        size++;
     } // сделал
 
     @Override
