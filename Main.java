@@ -1,4 +1,6 @@
 package humanResourses;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 public class Main {
@@ -9,46 +11,62 @@ public class Main {
         BusinessTravel bs3 = new BusinessTravel("London", 15, 30000, "travel in London");
         BusinessTravel bs4 = new BusinessTravel("Paris", 20, 20000, "travel in Paris");
         BusinessTravel bs5 = new BusinessTravel("Milan", 5, 50000, "travel in Milan");
+        BusinessTravel bs6 = new BusinessTravel("P", 20, 20000, "travel");
+        BusinessTravel bs7 = new BusinessTravel("M", 5, 50000, "travel");
 
-        List<BusinessTravel> list = new MyList();
+        PartTimeEmployee pt = new PartTimeEmployee("Victor", "Pupkin", JobTitlesEnum.AGENT, 1000);
+
+        StaffEmployee stf = new StaffEmployee("Ivan", "Sutkin", JobTitlesEnum.ANALYST, 10000);
+        stf.businessTravelInfo(bs1);
+        stf.businessTravelInfo(bs2);
+        stf.businessTravelInfo(bs3);
+        stf.setPremium(500);
+
+        StaffEmployee stf1 = new StaffEmployee("Lana", "Fay", JobTitlesEnum.ANALYST, 50);
+        StaffEmployee stf2 = new StaffEmployee("Obi-Wan","Kenobi", JobTitlesEnum.ASSISTANT, 1000 );
+        StaffEmployee stf3 = new StaffEmployee("Thor", "Odinson", JobTitlesEnum.DIRECTOR, 400000);
 
 
-        list.add(bs1);
-        list.add(bs2);
-        list.add(bs3);
-        list.add(bs4);
-        list.add(bs5);
+        Department sport = new Department("sport");
 
-        List<BusinessTravel> list1 = list.subList(2,4);
+        sport.addEmployee(stf);
+        sport.addEmployee(stf1);
+        sport.addEmployee(stf2);
+        sport.addEmployee(stf3);
+        sport.addEmployee(pt);
 
-        Object[] objects = list.toArray();
-        for(Object o : objects){
-            System.out.println(o);
+
+        List<Employee> list = new ProjectList();
+        list.add(stf);
+        list.add(stf1);
+        list.add(stf2);
+        list.add(stf3);
+        list.add(stf);
+
+
+        for (Employee emp : list) {
+            System.out.println(emp);
         }
 
 
-        for (BusinessTravel travel : list1) {
-            System.out.println(travel);
-        }
-        System.out.println(list1.size());
 
 
-        //list.print();
-        System.out.println(list.size());
-        System.out.println(list.isEmpty());
-        for (BusinessTravel travel : list) {
-            System.out.println(travel);
-        }
 
-        //System.out.println(list.remove(bs2));
+        Project lab = new Project("Laba");
+        lab.addEmployee(stf);
+        lab.addEmployee(stf1);
+        lab.addEmployee(stf2);
 
-        //System.out.println(list.get(3));
-        //list.set(0, bs2);
 
-        //list.print();
+        lab.setName("Lab2");
 
-        //list.clear();
-        //list.print();
-        //System.out.println(list.get(1));
+        System.out.println(lab);
+
+        DepartmentsManager apple = new DepartmentsManager("apple", new Project[]{lab});
+        System.out.println(apple.numGroup());
+        System.out.println(apple.removeGroup(lab));
+        System.out.println(apple.numGroup());
+
+
     }
 }

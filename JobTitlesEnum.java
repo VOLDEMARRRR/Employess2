@@ -15,4 +15,5 @@ public enum JobTitlesEnum {
     MANAGER,
     TECHNICIAN,
     NONE
+
 }

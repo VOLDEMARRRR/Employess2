@@ -24,6 +24,6 @@ public class PartTimeEmployee extends Employee{
         String s = '"' + name + " " + surname + ", ";
         if (post != JobTitlesEnum.NONE) s += post + " (внешний совместитель), ";
         if (salary != 0) s += salary + "р.";
-        return s + '"';
+        return s + "\"\n";
     }
 }

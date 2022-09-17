@@ -3,21 +3,24 @@ package humanResourses;
 import java.util.*;
 
 public class MyList implements List<BusinessTravel> {
-    public Node head;
-    int size = 0;
+    private Node head;
+    private int size = 0;
 
-    public MyList(){
-        head = null;
+    public MyList() {}
+
+    public MyList(BusinessTravel... businessTravels) {
+        this();
+        this.addAll(Arrays.asList(businessTravels));
     }
 
     public boolean add(BusinessTravel businessTravel) {
         Node newNode = new Node(businessTravel);
-        Node currentNode = head;
 
         if (head == null) {
             head = new Node();
             head.next = newNode;
         } else {
+            Node currentNode = head;
             for (int count = 0; count < size; count++) {
                 currentNode = currentNode.next;
             }
@@ -57,11 +60,7 @@ public class MyList implements List<BusinessTravel> {
     @Override
     public boolean containsAll(Collection<?> c) {
         for (Object element : c) {
-            int count = 0;
-            for (BusinessTravel travel : this) {
-                if (element.equals(travel)) count++;
-            }
-            if (count == 0) return false;
+            if (!this.contains(element)) return false;
         }
         return true;
     } // сделал
@@ -84,6 +83,7 @@ public class MyList implements List<BusinessTravel> {
                 newNode.next = head.next;
             }
             size++;
+            if (currentNode == null) return false;
             currentNode = currentNode.next;
         }
         return true;
@@ -92,13 +92,14 @@ public class MyList implements List<BusinessTravel> {
     @Override
     public boolean addAll(int index, Collection<? extends BusinessTravel> c) {
         if (index > size || index < 0) return false;
-
         Node currentNode = head;
         Node prevNode = null;
+
         for (int count = 0; count <= index; count++) {
             prevNode = currentNode;
             currentNode = currentNode.next;
         }
+
         for (BusinessTravel element : c) {
             Node newNode = new Node(element);
 
@@ -138,7 +139,7 @@ public class MyList implements List<BusinessTravel> {
                 currentNode = currentNode.next;
             }
         }
-        Node currentNode = head.next;
+        Node currentNode = head;
         for (int count = 0; count < size; count++) {
             currentNode = currentNode.next;
         }
@@ -148,32 +149,37 @@ public class MyList implements List<BusinessTravel> {
 
     @Override
     public boolean retainAll(Collection<?> c) {
+        if (head == null) return false;
+
         Node currentNode = head;
-        List<Integer> indexes = new ArrayList<>();
+        Node prevNode;
+        int counter = 0;
 
         for (int count = 0; count < size; count++) {
-            int counter = 0;
+            prevNode = currentNode;
             currentNode = currentNode.next;
-            for (Object element : c) {
-                if (currentNode.businessTravel.equals(element)) {
-                    counter++;
-                    break;
-                }
+            if (!c.contains(currentNode.businessTravel)) {
+                prevNode.next = currentNode.next;
+                currentNode = currentNode.next;
+                counter++;
             }
-            if (counter == 0) indexes.add(count);
         }
-
-        int i = 0;
-        for (Integer index : indexes) {
-            this.remove(index - i);
-            i++;
-        }
+        size -= counter;
+        currentNode.next = head.next;
         return true;
     } // сделал
 
     @Override
     public void clear() {
-        head.next = null;
+        Node currentNode;
+        Node bufferNode = head.next;
+
+        for (int count = 0; count < size; count++) {
+            currentNode = bufferNode;
+            bufferNode = bufferNode.next;
+            currentNode.businessTravel = null;
+            currentNode.next = null;
+        }
         head = null;
         size = 0;
     } // сделал
@@ -209,6 +215,8 @@ public class MyList implements List<BusinessTravel> {
         Node newNode = new Node(element);
         Node currentNode = head.next;
         Node prevNode;
+        if (index > size || index < 0) return;
+        size++;
 
         if (index == 0) {
             newNode.next = currentNode;
@@ -217,17 +225,16 @@ public class MyList implements List<BusinessTravel> {
                 currentNode = currentNode.next;
             }
             currentNode.next = head.next;
-        } else {
-            for (int count = 1; count < size; count++) {
-                prevNode = currentNode;
-                currentNode = currentNode.next;
-                if (index == count) {
-                    newNode.next = currentNode;
-                    prevNode.next = newNode;
-                }
+            return;
+        }
+        for (int count = 1; count < size; count++) {
+            prevNode = currentNode;
+            currentNode = currentNode.next;
+            if (index == count) {
+                newNode.next = currentNode;
+                prevNode.next = newNode;
             }
         }
-        size++;
     } // сделал
 
     @Override
@@ -298,11 +305,12 @@ public class MyList implements List<BusinessTravel> {
     @Override
     public List<BusinessTravel> subList(int fromIndex, int toIndex) {
         Node currentNode = head;
+        List<BusinessTravel> list = new MyList();
+        if (fromIndex < 0 || fromIndex > size || toIndex < 0 || toIndex > size) return list;
 
         for (int count = 0; count <= fromIndex; count++) {
             currentNode = currentNode.next;
         }
-        List<BusinessTravel> list = new MyList();
         for (int count = fromIndex; count < toIndex; count++) {
             list.add(currentNode.businessTravel);
             currentNode = currentNode.next;
@@ -322,11 +330,8 @@ public class MyList implements List<BusinessTravel> {
 
     @Override
     public boolean contains(Object o) {
-        Node currentNode = head.next;
-
-        for (int count = 0; count < size; count++) {
-            if (currentNode.businessTravel.equals(o)) return true;
-            currentNode = currentNode.next;
+        for (BusinessTravel travel : this) {
+            if (travel.equals(o)) return true;
         }
         return false;
     } // сделал
@@ -334,7 +339,7 @@ public class MyList implements List<BusinessTravel> {
     @Override
     public Iterator<BusinessTravel> iterator() {
         return new Iterator<BusinessTravel>() {
-            Node currentNode = head.next;
+            Node currentNode = null;
             int count = 0;
 
             @Override
@@ -344,6 +349,10 @@ public class MyList implements List<BusinessTravel> {
 
             @Override
             public BusinessTravel next() {
+                if (head == null) return null;
+                if (currentNode == null) {
+                    currentNode = head.next;
+                }
                 BusinessTravel element = currentNode.businessTravel;
                 currentNode = currentNode.next;
                 count++;
@@ -354,7 +363,9 @@ public class MyList implements List<BusinessTravel> {
 
     @Override
     public Object[] toArray() {
-        BusinessTravel[] mas = new BusinessTravel[size()];
+        BusinessTravel[] mas = new BusinessTravel[size];
+        if (head == null) return mas;
+
         Node currentNode = head.next;
         for (int count = 0; count < size; count++) {
             mas[count] = currentNode.businessTravel;
@@ -366,8 +377,10 @@ public class MyList implements List<BusinessTravel> {
     @Override
     public <T> T[] toArray(T[] a) {
         if (a.length < size) {
-            a = (T[])java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), size);
+            a = (T[]) java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), size);
         }
+
+        if (head == null) return a;
 
         Object[] result = a;
         Node currentNode = head.next;
@@ -381,16 +394,7 @@ public class MyList implements List<BusinessTravel> {
         return a;
     } // сделал
 
-    public void print(){
-        Node currentNode = head;
-
-        for (int count = 0; count < size; count++) {
-            currentNode = currentNode.next;
-            System.out.println(currentNode.businessTravel);
-        }
-    }
-
-    public class Node {
+    public static class Node {
         BusinessTravel businessTravel;
         Node next;
 
@@ -399,10 +403,11 @@ public class MyList implements List<BusinessTravel> {
             this.next = null;
         }
 
-        Node(){
+        Node() {
             this.businessTravel = null;
             this.next = null;
         }
+
     }
 
 }

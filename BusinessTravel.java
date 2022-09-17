@@ -40,7 +40,7 @@ public final class BusinessTravel {
         String s = '"' + "";
         if (!city.equals("")) s += city + " ";
         if (daysCount != 0) s += daysCount + " ";
-        if (compensation != 0) s += "(" + compensation + "). "; // если скобка как символ странное поведение
+        if (compensation != 0) s += "(" + compensation + "). ";
         if (!description.equals("")) s += description;
         return s + '"';
     }
